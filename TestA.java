@@ -1,5 +1,7 @@
 package test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -9,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 public class TestA {
 	private static final String countries = "London, us";
-	private static final int epochDate = 1553709600;
 	private static final String url = "https://samples.openweathermap.org/data/2.5/forecast/hourly?q=%S&appid=b6907d289e10d714a6e88b30761fae22"
 			.formatted(countries);
 
@@ -18,8 +19,12 @@ public class TestA {
 		ResponseEntity<Map> result = restTemplate.getForEntity(url, Map.class);
 		Map<String, List<Map>> body = result.getBody();
 		List<Map> ls = body.get("list");
+		System.out.println("Enter the Date in yyyy-MM-dd");
+		Scanner sc = new Scanner(System.in);
+		String userDate = sc.nextLine();
 		for (Map all : ls) {
-			if (epochDate == (int) all.get("dt")) {
+			String jsonDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(Long.parseLong(all.get("dt").toString()) * 1000));
+			if (userDate.equals(jsonDate)) {
 				System.out.println("matched requested date");
 				process(all);
 				break;
